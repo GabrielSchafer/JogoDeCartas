@@ -9,9 +9,9 @@
 </head>
 <body>
     <div id="telaInicial" class="tela">
-        <img id="imgCartas" src="IMG_6859.png" width="85" height="60" >
+        <img id="imgCartas" src="IMG_6859.png" width="85" height="60">
         <div id="entradaTexto">
-        <h1>PEGA MONTE</h1>
+            <h1>PEGA MONTE</h1>
         </div>
         <div id="salas">
             <div id="sala" class="sala" onclick="entrarSala('Sala 1', this)">JOGAR</div>
@@ -19,7 +19,7 @@
     </div>
 
     <div id="fila" class="fila hidden">
-       <div id="filaId">ESPERANDO TODOS OS JOGADORES: 0/4...</div>
+        <div id="filaId">ESPERANDO TODOS OS JOGADORES: 0/4...</div>
     </div>
 
     <div id="telaJogo" class="tela hidden">
@@ -30,24 +30,32 @@
                 <div id="salaAtual">Sala: </div>
             </div>
             <div id="rodada">
-                <h2>RODADA:</h2> 
+                <h2>RODADA:</h2>
                 <div id="monteCarta">
                     <div id="numeroMonte">Monte: </div>
-                    <img src="ImagensPegaMonte/1.png">
+                    <img src="ImagensPegaMonte/1.png" alt="Carta no Monte">
                 </div>
 
                 <div id="numeroBaralho" class="numeroBaralho">26</div>
 
                 <button id="baralho" onclick="escolherCarta()">
-                    <img src="ImagensPegaMonte/16.png">
+                    <img src="ImagensPegaMonte/16.png" alt="Escolher Carta">
                 </button>
                 <button id="botaoBater" onclick="bater()">
-                    <img src="ImagensPegaMonte/17.png">
+                    <img src="ImagensPegaMonte/17.png" alt="Bater na Mesa">
                 </button>
             </div>
+
+            <!-- Área para exibir as cartas do jogador ativo -->
+            <div id="suasCartas" class="suasCartas"></div> 
         </div>
+
+        <div id="displayJogadores">
+        <div id="listaJogadores" class="listaJogadores"></div>
+    </div>
     </div>
 
     <script src="script.js"></script>
 </body>
 </html>
+
