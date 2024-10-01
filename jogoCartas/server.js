@@ -11,22 +11,62 @@ const salas = {
 
 };
 
+let monteCartas = {};
+
+function Carta(numeroCarta, imagemCarta){
+    this.numeroCarta = numeroCarta;
+    this.imagemCarta = imagemCarta;
+}
+
+
+//criando o baralho
+const baralho = [];
+function criaBaralho(baralho){
+    for(let i = 0; i < 8;i++){
+        for(let j = 0; j < 13;j++){
+            let carta = new Carta(j,`${j}.png` );
+            baralho.push(carta);
+        }
+    }
+    //ao criar o baralho na mesma funçao eu irei embaralhar as cartas
+    for(let i = 0; i < 10;i++){
+        baralho.sort(() => Math.random() - 0.5);
+    }
+
+}
+
+function distribuirCarta(i){
+
+}
+
+function User(userName, id, baralho){
+    this.id = id;
+    this.name = userName;
+    this.baralho = baralho;
+}
+
+let salaCheia;
 const usuarios = {}; 
 
 app.use(express.static('public'));
 
+//criando o baralho
+criaBaralho(baralho);
+console.log(baralho.length)
+
+
 io.on('connection', (socket) => {
     console.log('Usuário conectado:', socket.id);
 
-    socket.on('entrarSala', ({ sala, usuarioNome }) => {
+    socket.on('entrarSala', ({ sala, userName }) => {
         socket.join(sala);
         salas[sala].numero += 1;
 
         // Armazena o usuário no objeto `usuarios`
-        usuarios[socket.id] = { nome: usuarioNome, sala };
+        usuarios[socket.id] = { nome: userName, sala};
 
         // Notifica os outros usuários na sala
-        socket.to(sala).emit('mensagem', `${usuarioNome} entrou na sala!`);
+        socket.to(sala).emit('mensagem', `${userName} entrou na sala!`);
         
         // Atualiza todos os usuários sobre o número de jogadores
         io.to(sala).emit('atualizaJogadores', { sala, numeroJogadores: salas[sala].numero, maxJogadores: salas[sala].max });
@@ -66,6 +106,13 @@ io.on('connection', (socket) => {
         }
         console.log('Usuário desconectado:', socket.id);
     });
+
+    socket.on(`salaCheia`, () =>{
+        if(salas[sala].numero >= salas[sala].max){
+
+        }
+    })
+
 });
 
 server.listen(3000, () => {

@@ -23,6 +23,7 @@
     </div>
 
     <div id="telaJogo" class="tela hidden">
+        <div id="numeroJogadores" class="numeroJogadores">Número de jogadores: 0/4</div>
         <div id="jogoDiv">
             <div id="infoJogador">
                 <div id="nomeUsuario">Usuário: </div>
@@ -30,9 +31,13 @@
             </div>
             <div id="rodada">
                 <h2>RODADA:</h2> 
-                <div id="cartaAtual">
+                <div id="monteCarta">
+                    <div id="numeroMonte">Monte: </div>
                     <img src="ImagensPegaMonte/1.png">
                 </div>
+
+                <div id="numeroBaralho" class="numeroBaralho">26</div>
+
                 <button id="baralho" onclick="escolherCarta()">
                     <img src="ImagensPegaMonte/16.png">
                 </button>

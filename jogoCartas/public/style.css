@@ -171,15 +171,26 @@ html, body {
     transition: background-color 500ms ease-in;
     background-color: gray;
 }
-#cartaAtual{
+#monteCarta{
     background-color: transparent;
     width: 200px;
     height: 200px;
     border: none;
+    display: flex;
+
 }
-#cartaAtual img{
+#numeroMonte{
+    margin-top: 100px;
+    width: 250px;
+}
+#monteCarta img{
     padding: 5px 10px;
     width: 200px;
     height: 200px;
+}
+#numeroJogadores{
+    justify-content: left;
+    text-align: left;
+    width: 100%;
 }
 
