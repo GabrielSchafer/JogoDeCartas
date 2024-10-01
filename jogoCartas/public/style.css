@@ -52,6 +52,7 @@ html, body {
     background-color: #ABADAE;
     height: 100%;
     width: 100%;
+    position: relative; 
 }
 
 .hidden {
@@ -101,39 +102,7 @@ html, body {
     height: 100px;
 }
 
-.jogador {
-    position: absolute;
-    padding: 10px;
-    border-radius: 5px;
-    background-color: #FFD700;
-    color: #000;
-    font-weight: bold;
-    text-align: center;
-}
 
-#jogadorTopo {
-    top: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-}
-
-#jogadorDireita {
-    top: 50%;
-    right: 10px;
-    transform: translateY(-50%);
-}
-
-#jogadorEsquerda {
-    top: 50%;
-    left: 10px;
-    transform: translateY(-50%);
-}
-
-#jogadorBaixo {
-    bottom: 10px;
-    left: 50%;
-    transform: translateX(-50%);
-}
 #fila{
     position: absolute;
     height: 20px;
@@ -192,5 +161,49 @@ html, body {
     justify-content: left;
     text-align: left;
     width: 100%;
+}
+.listaJogadores {
+    display: flex;
+    justify-content: space-between; 
+    position: absolute;
+    bottom: 20px; 
+    left: 0;
+    right: 0; 
+    margin: 0 20px; 
+   
+   
+}
+
+#displayJogadores {
+    margin-top: 40px; 
+}
+
+.jogador {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+}
+
+.jogador img {
+    width: 100px; 
+    height: auto;
+}
+
+.suasCartas {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    margin-top: 20px; 
+}
+
+.suasCartas img {
+    width: 100px; 
+    height: auto;
+}
+
+#infoJogador {
+    display: flex;
+    flex-direction: column; 
+    align-items: center; 
 }
 
