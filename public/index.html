@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jogo de Cartas</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="/socket.io/socket.io.js"></script> <!-- Incluindo Socket.IO -->
+</head>
+
+<body>
+    <div id="telaInicial" class="tela">
+        <img id="imgCartas" src="IMG_6859.png" width="85" height="60" >
+        <div id="entradaTexto">
+        <h1>PEGA MONTE</h1>
+        </div>
+        <div id="salas">
+            <div id="sala" class="sala" onclick="entrarSala('Sala 1', this)">JOGAR</div>
+        </div>
+    </div>
+
+    <div id="fila" class="fila hidden">
+       <div id="filaId">ESPERANDO TODOS OS JOGADORES: 0/4...</div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <div id="telaJogo" class="tela hidden">
+        <div id="numeroJogadores" class="numeroJogadores"></div>
+
+        <div id="jogoDiv">
+
+            <div id="jogadores">
+                <div class="jogador">
+                    <div class="perfil_jogador">
+                        <i style="color: green; font-weight: bold; border-color: green;" class="fa-regular fa-user icone-usuario"></i>
+                    </div>
+                    <div class="nome_jogador">
+                        <p style="color: green; font-weight: bold;">Você</p>
+                        <p style="color: green; font-weight: bold;">11</p>
+                    </div>
+                </div>
+    
+                <div class="jogador">
+                    <div class="perfil_jogador">
+                        <i class="fa-regular fa-user icone-usuario"></i>
+                    </div>
+                    <div class="nome_jogador">
+                        <p>Player 2</p>
+                        <p>32</p>
+                    </div>
+                </div>
+                    
+    
+                <div class="jogador">
+                    <div class="perfil_jogador">
+                        <i class="fa-regular fa-user icone-usuario"></i>
+                    </div>
+                    <div class="nome_jogador">
+                        <p>Player 3</p>
+                        <p>40</p>
+                    </div>
+                </div>
+    
+                <div class="jogador">
+                    <div class="perfil_jogador">
+                        <i class="fa-regular fa-user icone-usuario"></i>
+                    </div>
+                    <div class="nome_jogador">
+                        <p>Player 4</p>
+                        <p>21</p>
+                    </div>
+                </div>
+    
+                </div>
+
+                <div id="vez_de">
+                    <div>
+                        <i style="color: goldenrod;" class="fa-solid fa-arrow-up-long"></i>
+                    </div>
+                    <div id="texto_vez_de">
+                        <p>vez de</p>
+                    </div>
+                </div>
+
+            <div id="rodada">
+
+                <div id="quadro">
+                    <div id="contador_13">
+                        <div id="texto_contador_13">
+                            <h3 style="font-size: 40px;" class="fonte_quadro"><u>Contador</u></h3>
+                        </div>
+                        <div id="numero_contador_13">
+                            <h1 style="font-size: 62px;" class="fonte_quadro">13</h3>
+                        </div>
+                    </div>
+                        <img id="chalk_line" src="ImagensPegaMonte/chalk_line.png" alt="">
+                    <div id="numero_cartas_pilha">
+                        <div id="texto_numero_cartas_pilha">
+                            <h3 style="font-size: 40px;" class="fonte_quadro"><u>Cartas na Pilha</u></h3>
+                        </div>
+                        <div id="numero_numero_cartas_pilha">
+                            <h1 style="font-size: 62px;" class="fonte_quadro">21</h3>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div id="monteCarta">
+                    <div id="monteCarta_item1">
+
+                        <button id="baralho" onclick="escolherCarta()">
+                            <img src="ImagensPegaMonte/16.png">
+                        </button>
+
+                    </div>
+                    <div id="monteCarta_item2">
+
+                        <img src="ImagensPegaMonte/1.png">
+
+                    </div>
+
+                    <div id="monteCarta_item3">
+
+                        <button id="botaoBater" onclick="bater()">
+                            <img src="ImagensPegaMonte/17.png">
+                        </button>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <script src="script.js"></script>
+</body>
+</html>
