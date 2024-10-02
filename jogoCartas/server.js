@@ -11,7 +11,7 @@ const salas = {
 
 };
 
-let monteCartas= 0;
+let monteCartas= {};
 
 function Carta(numeroCarta, imagemCarta){
     this.numeroCarta = numeroCarta;
