@@ -45,7 +45,6 @@ function entrarSala(sala) {
 
         salaAtual = sala; // Salva a sala atual
         socket.emit('entrarSala', {sala, userName}); // Envia o evento ao servidor
-
         // Muda da tela inicial para a tela do jogo
         document.getElementById("telaInicial").classList.add("hidden");
         //document.getElementById("fila").classList.remove("hidden");
@@ -86,7 +85,4 @@ socket.on('jogar', (data) => {
 });
 
 //atualiza o monte
-socket.on('mandaMonte', (data) => {
-    let element = document.getElementById("numeroMonte");
-    element.textContent = 'Monte: ' + data.monteCartas;
-})
+

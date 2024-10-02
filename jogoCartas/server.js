@@ -8,7 +8,6 @@ const io = new Server(server);
 
 const salas = {
     'Sala 1': { numero: 0, max: 4 },
-
 };
 
 let monteCartas= {};
@@ -44,10 +43,10 @@ function distribuirCartas(cartas,usuarios) {
     }
 }
 
-function User(userName, id, baralhoUsuario){
-    this.id = id;
+function User(userName,baralhoUsuario, sala){
     this.name = userName;
     this.baralhoUsuario = baralhoUsuario;
+    this.sala = sala;
 }
 
 function adicionaMonte(carta,monte){
@@ -90,7 +89,6 @@ function comparaBater(monte, rodada, usuario,tempoBatida) {
         }
     }
 }
-let salaCheia;
 const usuarios = {}; 
 
 app.use(express.static('public'));
@@ -106,37 +104,45 @@ io.on('connection', (socket) => {
     socket.on('entrarSala', ({ sala, userName }) => {
         socket.join(sala);
         salas[sala].numero += 1;
-
         // Armazena o usuário no objeto `usuarios`
-        usuarios[socket.id] = { nome: userName, sala};
-        if (salas[sala]=== 4) {
+        usuarios[socket.id] = new User(userName, salas[sala])
+
+        for (const socketId in usuarios) {
+            if (usuarios.hasOwnProperty(socketId)) {
+                const usuario = usuarios[socketId];
+                console.log(`Usuário com ID ${socketId}: ${usuario.name} (Sala ${usuario.sala})`);
+            }
+        }
+        if (salas[sala].length == 4) {
             io.emit('iniciarJogo');
             console.log('O jogo pode começar!');
         }
         // Notifica os outros usuários na sala
         socket.to(sala).emit('mensagem', `${userName} entrou na sala!`);
-        
         // Atualiza todos os usuários sobre o número de jogadores
         io.to(sala).emit('atualizaJogadores', { sala, numeroJogadores: salas[sala].numero, maxJogadores: salas[sala].max });
     });
 
     socket.on('bater', (data) => {
-        console.log(`${data.usuarioNome} bateu!`); 
+        const usuario = usuarios[socket.id]; // Obtém o objeto User do usuário que emitiu o evento
+        const nomeUsuario = usuario.name;
+        const salaUsuario = usuario.sala;
+
+        console.log(`${nomeUsuario} bateu!`);
 
         socket.emit('bateu', { jogador: 'Você' });
 
-        socket.to(data.sala).emit('bateu', { jogador: data.usuarioNome });
+        socket.to(data.sala).emit('bateu', { jogador: nomeUsuario });
     });
 
     socket.on('jogar', (data) => {
-        console.log(`${data.usuarioNome} jogou a carta!`);
+        const usuario = usuarios[socket.id];
+        console.log(`${usuario.name} jogou a carta!`);
 
         socket.emit('jogar', { jogador: 'Você' });
 
-        socket.to(data.sala).emit('jogar', { jogador: data.usuarioNome });
+        socket.to(data.sala).emit('jogar', { jogador: usuario.name });
 
-        socket.emit('mandarMonte', {monteCartas})
-        monteCartas++;
     });
 
     socket.on('disconnect', () => {
