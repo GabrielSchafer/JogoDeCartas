@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const { Server } = require('socket.io');
@@ -147,20 +148,20 @@ io.on('connection', (socket) => {
             rodadas = 0;
         }
         if (retornaUltimaCartaMonte(monteCartas) != rodadas && primeiroJogador) {
-                console.log(usuariosArray[0].name + " bateu errado e compra o monte")
-                monte = [];
-                console.log(monte.length + " número do monte")
-                mensagemBater.concat(usuariosArray[0].name + " bateu errado e compra o monte");
-                rodadas = 0;
-            }
+            console.log(usuariosArray[0].name + " bateu errado e compra o monte")
+            monte = [];
+            console.log(monte.length + " número do monte")
+            mensagemBater.concat(usuariosArray[0].name + " bateu errado e compra o monte");
+            rodadas = 0;
+        }
 
-            console.log(`${nomeUsuario} bateu!`);
+        console.log(`${nomeUsuario} bateu!`);
 
-            socket.emit('bateu', {jogador: 'Você'});
-            socket.to(data.sala).emit('bateu', {jogador: nomeUsuario});
-            socket.emit('bateu', {mensagemBater: mensagemBater});
+        socket.emit('bateu', {jogador: 'Você'});
+        socket.to(data.sala).emit('bateu', {jogador: nomeUsuario});
+        socket.emit('bateu', {mensagemBater: mensagemBater});
 
-        });
+    });
 
     socket.on('jogar', (data) => {
         const usuario = usuarios[socket.id];
@@ -175,7 +176,7 @@ io.on('connection', (socket) => {
 
         const numeroCartas = usuario.baralhoUsuario.length
 
-        io.emit('cartasUser',{ numeroCartas: numeroCartas });
+        io.emit('cartasUser',{ numeroCartas: numeroCartas, userName: usuario.name});
 
         socket.to(data.sala).emit('jogar', { jogador: usuario.name, rodadas : rodadas});
 

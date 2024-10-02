@@ -1,3 +1,4 @@
+
 const socket = io(); // Conecta ao servidor
 
 let salaAtual;
@@ -32,8 +33,8 @@ socket.on('atualizaJogadores', (data) => {
 
 //  mensagem de entrada e saída
 socket.on('mensagem', (msg) => {
-    console.log(msg); 
-    alert(msg); 
+    console.log(msg);
+    alert(msg);
 });
 
 //SOCKET.ON PARA RECEBER A VOLTA DO SERVIDOR
@@ -107,7 +108,7 @@ socket.on('jogar', (data) => {
 
 socket.on('cartasUser', (data) => {
     const divBaralho = document.getElementById("numeroBaralho");
-    divBaralho.textContent = `${data.numeroCartas}`;
+    divBaralho.textContent = `${data.userName}: ${data.numeroCartas}`;
 })
 
 socket.on('monteAtualizado', (data) =>{
@@ -117,12 +118,10 @@ socket.on('monteAtualizado', (data) =>{
     divImagem.src = "ImagensPegaMonte/"+data.monteCarta.imagemCarta;
 
 })
-socket.on('baralho', (data) =>{
-})
+
 
 socket.on('finalizarJogo', (data)=>{
     alert(data.mensagemFinal)
 
 })
 //atualiza o monte
-

@@ -8,46 +8,46 @@
     <script src="/socket.io/socket.io.js"></script> <!-- Incluindo Socket.IO -->
 </head>
 <body>
-    <div id="telaInicial" class="tela">
-        <img id="imgCartas" src="IMG_6859.png" width="85" height="60" >
-        <div id="entradaTexto">
+<div id="telaInicial" class="tela">
+    <img id="imgCartas" src="IMG_6859.png" width="85" height="60" >
+    <div id="entradaTexto">
         <h1>PEGA MONTE</h1>
-        </div>
-        <div id="salas">
-            <div id="sala" class="sala" onclick="entrarSala('Sala 1', this)">JOGAR</div>
-        </div>
     </div>
-
-    <div id="fila" class="fila hidden">
-       <div id="filaId">ESPERANDO TODOS OS JOGADORES</div>
+    <div id="salas">
+        <div id="sala" class="sala" onclick="entrarSala('Sala 1', this)">JOGAR</div>
     </div>
+</div>
 
-    <div id="telaJogo" class="tela hidden">
-        <div id="numeroJogadores" class="numeroJogadores">Número de jogadores: 0/4</div>
-        <div id="jogoDiv">
-            <div id="infoJogador">
-                <div id="nomeUsuario">Usuário: </div>
-                <div id="salaAtual">Sala: </div>
+<div id="fila" class="fila hidden">
+    <div id="filaId">ESPERANDO TODOS OS JOGADORES</div>
+</div>
+
+<div id="telaJogo" class="tela hidden">
+    <div id="numeroJogadores" class="numeroJogadores">Número de jogadores: 0/4</div>
+    <div id="jogoDiv">
+        <div id="infoJogador">
+            <div id="nomeUsuario">Usuário: </div>
+            <div id="salaAtual">Sala: </div>
+        </div>
+        <div id="rodada">
+            <h2 id="rodadas">RODADA:</h2>
+            <div id="monteCarta">
+                <div id="numeroMonte">Monte: </div>
+                <img id="lastCardDeck" src="">
             </div>
-            <div id="rodada">
-                <h2 id="rodadas">RODADA:</h2>
-                <div id="monteCarta">
-                    <div id="numeroMonte">Monte: </div>
-                    <img id="lastCardDeck" src="">
-                </div>
 
-                <div id="numeroBaralho" class="numeroBaralho">26</div>
+            <div id="numeroBaralho" class="numeroBaralho">26</div>
 
-                <button id="baralho" onclick="escolherCarta()">
-                    <img src="ImagensPegaMonte/16.png">
-                </button>
-                <button id="botaoBater" onclick="bater()">
-                    <img src="ImagensPegaMonte/17.png">
-                </button>
-            </div>
+            <button id="baralho" onclick="escolherCarta()">
+                <img src="ImagensPegaMonte/16.png">
+            </button>
+            <button id="botaoBater" onclick="bater()">
+                <img src="ImagensPegaMonte/17.png">
+            </button>
         </div>
     </div>
+</div>
 
-    <script src="script.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
