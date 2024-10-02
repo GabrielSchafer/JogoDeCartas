@@ -60,7 +60,36 @@ function retornaUltimaCartaMonte(monte){
     return monte[ultimo]
 }
 
+function comparaBater(monte, rodada, usuario,tempoBatida) {
 
+    let ultimaMonte = retornaUltimaCartaMonte(monte);
+    if (ultimaMonte.numeroCarta != rodada && tempoBatida == 1) {
+        usuario.baralhoUsuario.push(...monte);
+        console.log(usuario.name + " bateu errado e compra o monte")
+        monte = {};
+        console.log(monte.length + " número do monte")
+    } else {
+        switch (tempoBatida) {
+            case 1:
+                console.log(usuario.name + " foi o primeiro a bater e não compra nada");
+                break;
+            case 2:
+                console.log(usuario.name + " foi o segundo a bater e não compra nada");
+                break;
+            case 3:
+                console.log(usuario.name + " foi o terceiro a bater e não compra nada");
+                break;
+            case 4:
+                console.log(usuario.name + " foi o último a bater e compra o monte");
+                usuario.baralhoUsuario.push(...monte);
+                monte = {};
+                console.log(monte.length + " número do monte")
+                break;
+            default:
+                console.log("ERRO 01");
+        }
+    }
+}
 let salaCheia;
 const usuarios = {}; 
 
