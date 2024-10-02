@@ -69,7 +69,6 @@ async function entrarSala(sala) {
                 console.log(`Entrou na ${sala} como ${userName}`);
             } else {
                 document.getElementById("fila").classList.remove("hidden");
-                alert(liberaSala)
             }
             resolve();
         });
@@ -90,7 +89,7 @@ function escolherCarta(){
 }
 // Listener para a resposta do servidor sobre quem bateu
 socket.on('bateu', (data) => {
-    if (data.jogador === 'Você') {
+    if (data.jogador == 'Você') {
         alert('Você bateu na mesa!');
     } else {
         alert(`${data.jogador} bateu na mesa!`);
@@ -102,6 +101,8 @@ socket.on('jogar', (data) => {
     } else {
         alert(`${data.jogador} jogou a carta!`);
     }
+    const divRodadas = document.getElementById("rodadas");
+    divRodadas.textContent = "Rodadas: " + data.rodadas;
 });
 
 socket.on('cartasUser', (data) => {
@@ -117,6 +118,11 @@ socket.on('monteAtualizado', (data) =>{
 
 })
 socket.on('baralho', (data) =>{
+})
+
+socket.on('finalizarJogo', (data)=>{
+    alert(data.mensagemFinal)
+
 })
 //atualiza o monte
 

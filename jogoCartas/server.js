@@ -56,43 +56,22 @@ function retornaUltimaCartaMonte(monte){
     return monte[ultimo]
 }
 
-function comparaBater(monte, rodada, usuario,tempoBatida) {
-
-    let ultimaMonte = retornaUltimaCartaMonte(monte);
-    if (ultimaMonte.numeroCarta != rodada && tempoBatida == 1) {
-        usuario.baralhoUsuario.push(...monte);
-        console.log(usuario.name + " bateu errado e compra o monte")
-        monte = [];
-        console.log(monte.length + " número do monte")
-    } else {
-        switch (tempoBatida) {
-            case 1:
-                console.log(usuario.name + " foi o primeiro a bater e não compra nada");
-                break;
-            case 2:
-                console.log(usuario.name + " foi o segundo a bater e não compra nada");
-                break;
-            case 3:
-                console.log(usuario.name + " foi o terceiro a bater e não compra nada");
-                break;
-            case 4:
-                console.log(usuario.name + " foi o último a bater e compra o monte");
-                usuario.baralhoUsuario.push(...monte);
-                monte = [];
-                console.log(monte.length + " número do monte")
-                break;
-            default:
-                console.log("ERRO 01");
-        }
-    }
+function encerrarServidor() {
+    io.close();
+    server.close(() => {
+        console.log('Servidor encerrado');
+    });
 }
-const usuarios = {}; 
+
+
+const usuarios = {};
 
 app.use(express.static('public'));
 
 //criando o baralho
 criaBaralho(baralho);
 console.log(baralho.length)
+
 let rodadas = 0;
 const monteCartas= [];
 io.on('connection', (socket) => {
@@ -127,27 +106,84 @@ io.on('connection', (socket) => {
         const usuario = usuarios[socket.id]; // Obtém o objeto User do usuário que emitiu o evento
         const nomeUsuario = usuario.name;
         const salaUsuario = usuario.sala;
+        const mensagemBater = ""
+        let primeiroJogador = false;
+        let usuariosArray = [];
 
-        console.log(`${nomeUsuario} bateu!`);
+        usuariosArray.push(usuario)
 
-        socket.emit('bateu', { jogador: 'Você' });
+        if(usuariosArray.length <= 1){
+            primeiroJogador = true;
+        }
 
-        socket.to(data.sala).emit('bateu', { jogador: nomeUsuario });
-    });
+        let tempoBatida;
+        if (retornaUltimaCartaMonte(monteCartas).numeroCarta == rodadas && usuariosArray.length == 4){} {
+            for (let i = 0; i < usuariosArray.length; i++) {
+                tempoBatida = i + 1;
+                switch (tempoBatida) {
+                    case 1:
+                        console.log(usuariosArray[i].name + " foi o primeiro a bater e não compra nada");
+                        mensagemBater.concat(usuariosArray[i].name + " foi o primeiro a bater e não compra nada <br>");
+                        break;
+                    case 2:
+                        console.log(usuariosArray[i].name + " foi o segundo a bater e não compra nada");
+                        mensagemBater.concat(usuariosArray[i].name + " foi o segundo a bater e não compra nada <br>");
+                        break;
+                    case 3:
+                        console.log(usuariosArray[i].name + " foi o terceiro a bater e não compra nada");
+                        mensagemBater.concat(usuariosArray[i].name + " foi o terceiro a bater e não compra nada <br>")
+                        break;
+                    case 4:
+                        console.log(usuariosArray[i].name + " foi o último a bater e compra o monte");
+                        mensagemBater.concat(usuariosArray[i].name + " foi o ultimo a bater e compra o monte <br>")
+                        usuariosArray[i].baralhoUsuario.push(...monte);
+                        monte = [];
+                        console.log(monte.length + " número do monte")
+                        break;
+                    default:
+                        console.log("ERRO 01");
+                }
+            }
+            rodadas = 0;
+        }
+        if (retornaUltimaCartaMonte(monteCartas) != rodadas && primeiroJogador) {
+                console.log(usuariosArray[0].name + " bateu errado e compra o monte")
+                monte = [];
+                console.log(monte.length + " número do monte")
+                mensagemBater.concat(usuariosArray[0].name + " bateu errado e compra o monte");
+                rodadas = 0;
+            }
+
+            console.log(`${nomeUsuario} bateu!`);
+
+            socket.emit('bateu', {jogador: 'Você'});
+            socket.to(data.sala).emit('bateu', {jogador: nomeUsuario});
+            socket.emit('bateu', {mensagemBater: mensagemBater});
+
+        });
 
     socket.on('jogar', (data) => {
         const usuario = usuarios[socket.id];
+        if(rodadas == 13){
+            rodadas = 0;
+        }
         console.log(`${usuario.name} jogou a carta!`);
-
+        rodadas++;
         //adiciona uma carta no monte
         monteCartas.push(usuario.baralhoUsuario.pop())
-        socket.emit('jogar', { jogador: 'Você' });
+        socket.emit('jogar', { jogador: 'Você' , rodadas : rodadas});
 
         const numeroCartas = usuario.baralhoUsuario.length
 
         io.emit('cartasUser',{ numeroCartas: numeroCartas });
 
-        socket.to(data.sala).emit('jogar', { jogador: usuario.name});
+        socket.to(data.sala).emit('jogar', { jogador: usuario.name, rodadas : rodadas});
+
+        if(usuario.baralhoUsuario.length == 0){
+            let mensagemFinal = usuario.name + " Ganhou o jogo"
+            io.to(data.sala).emit('finalizarJogo', {mensagemFinal : mensagemFinal})
+            encerrarServidor()
+        }
 
     });
     socket.on(`atualizarMonte`, (data) => {
@@ -162,15 +198,15 @@ io.on('connection', (socket) => {
             const { nome, sala } = usuario; // Desestrutura o nome e a sala
             salas[sala].numero -= 1; // Reduz o número de jogadores na sala
             console.log(`Usuário desconectado:` + usuario.name);
-            
+
             // Notifica os outros usuários que um usuário saiu
             io.to(sala).emit('mensagem', usuario.name + ` saiu da sala.`);
-            
+
             // Atualiza todos os usuários sobre o número de jogadores
             io.to(sala).emit('atualizaJogadores', { sala, numeroJogadores: salas[sala].numero, maxJogadores: salas[sala].max });
-            
+
             // Remove o usuário do objeto `usuarios`
-            delete usuarios[socket.id]; 
+            delete usuarios[socket.id];
         }
         console.log('Usuário desconectado:', socket.id);
     });
