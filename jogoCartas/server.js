@@ -11,7 +11,7 @@ const salas = {
 
 };
 
-let monteCartas= 0;
+let monteCartas= {};
 
 function Carta(numeroCarta, imagemCarta){
     this.numeroCarta = numeroCarta;
@@ -50,6 +50,17 @@ function User(userName, id, baralhoUsuario){
     this.baralhoUsuario = baralhoUsuario;
 }
 
+function adicionaMonte(carta,monte){
+    monte.push(carta);
+}
+
+function retornaUltimaCartaMonte(monte){
+    let ultimo =  monte.length - 1;
+
+    return monte[ultimo]
+}
+
+
 let salaCheia;
 const usuarios = {}; 
 
@@ -69,7 +80,10 @@ io.on('connection', (socket) => {
 
         // Armazena o usuário no objeto `usuarios`
         usuarios[socket.id] = { nome: userName, sala};
-
+        if (salas[sala]=== 4) {
+            io.emit('iniciarJogo');
+            console.log('O jogo pode começar!');
+        }
         // Notifica os outros usuários na sala
         socket.to(sala).emit('mensagem', `${userName} entrou na sala!`);
         
