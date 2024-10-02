@@ -10,7 +10,7 @@ const salas = {
     'Sala 1': { numero: 0, max: 4 },
 };
 
-let monteCartas= {};
+
 
 function Carta(numeroCarta, imagemCarta){
     this.numeroCarta = numeroCarta;
@@ -34,24 +34,21 @@ function criaBaralho(baralho){
 
 }
 
-function distribuirCartas(cartas,usuarios) {
+function distribuirCartas(cartas,usuario) {
 
-    for (let i = 0; i < 1; i++) {
-       for (let j = 0; j < 26;j++){
-           usuarios[i].baralhoUsuario.push(cartas.pop())
-       }
+    for (let j = 0; j < 26;j++){
+        usuario.baralhoUsuario.push(cartas.pop())
+        console.log('distribuindo as cartas')
     }
 }
 
-function User(userName,baralhoUsuario, sala){
+
+function User(userName,sala){
     this.name = userName;
-    this.baralhoUsuario = baralhoUsuario;
+    this.baralhoUsuario = [];
     this.sala = sala;
 }
 
-function adicionaMonte(carta,monte){
-    monte.push(carta);
-}
 
 function retornaUltimaCartaMonte(monte){
     let ultimo =  monte.length - 1;
@@ -65,7 +62,7 @@ function comparaBater(monte, rodada, usuario,tempoBatida) {
     if (ultimaMonte.numeroCarta != rodada && tempoBatida == 1) {
         usuario.baralhoUsuario.push(...monte);
         console.log(usuario.name + " bateu errado e compra o monte")
-        monte = {};
+        monte = [];
         console.log(monte.length + " número do monte")
     } else {
         switch (tempoBatida) {
@@ -81,7 +78,7 @@ function comparaBater(monte, rodada, usuario,tempoBatida) {
             case 4:
                 console.log(usuario.name + " foi o último a bater e compra o monte");
                 usuario.baralhoUsuario.push(...monte);
-                monte = {};
+                monte = [];
                 console.log(monte.length + " número do monte")
                 break;
             default:
@@ -97,28 +94,35 @@ app.use(express.static('public'));
 criaBaralho(baralho);
 console.log(baralho.length)
 
-
+const monteCartas= [];
 io.on('connection', (socket) => {
     console.log('Usuário conectado:', socket.id);
 
     socket.on('entrarSala', ({ sala, userName }) => {
+
         socket.join(sala);
         salas[sala].numero += 1;
         // Armazena o usuário no objeto `usuarios`
         usuarios[socket.id] = new User(userName, salas[sala])
 
-        for (const socketId in usuarios) {
+        /*for (const socketId in usuarios) {
             if (usuarios.hasOwnProperty(socketId)) {
                 const usuario = usuarios[socketId];
                 console.log(`Usuário com ID ${socketId}: ${usuario.name} (Sala ${usuario.sala})`);
             }
-        }
+        }*/
+
         if (salas[sala].length == 4) {
             io.emit('iniciarJogo');
             console.log('O jogo pode começar!');
         }
+
         // Notifica os outros usuários na sala
         socket.to(sala).emit('mensagem', `${userName} entrou na sala!`);
+        distribuirCartas(baralho,usuarios[socket.id]);
+        for(let i = 0; i < usuarios[socket.id].baralhoUsuario.length;i++){
+            console.log(usuarios[socket.id].baralhoUsuario[i].numeroCarta);
+        }
         // Atualiza todos os usuários sobre o número de jogadores
         io.to(sala).emit('atualizaJogadores', { sala, numeroJogadores: salas[sala].numero, maxJogadores: salas[sala].max });
     });
@@ -139,11 +143,18 @@ io.on('connection', (socket) => {
         const usuario = usuarios[socket.id];
         console.log(`${usuario.name} jogou a carta!`);
 
+        //adiciona uma carta no monte
+        monteCartas.push(usuario.baralhoUsuario.pop())
         socket.emit('jogar', { jogador: 'Você' });
 
         socket.to(data.sala).emit('jogar', { jogador: usuario.name });
 
     });
+    socket.on(`atualizarMonte`, (data) => {
+        //enviando a mensagem de volta para o servidor
+        socket.to(data.sala).emit(`monteAtualizado`,{ monteCarta: retornaUltimaCartaMonte(monteCartas), tamanhoMonte: monteCartas.length} )
+        console.log(retornaUltimaCartaMonte(monteCartas))
+    } )
 
     socket.on('disconnect', () => {
         const usuario = usuarios[socket.id];
@@ -164,10 +175,8 @@ io.on('connection', (socket) => {
         console.log('Usuário desconectado:', socket.id);
     });
 
-    socket.on(`salaCheia`, () =>{
-        if(salas[sala].numero >= salas[sala].max){
-
-        }
+    socket.on('baralho', (data) =>{
+        const user = usuario[socket.id]
     })
 
 });

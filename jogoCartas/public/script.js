@@ -65,8 +65,8 @@ function bater() {
 
 function escolherCarta(){
     console.log("Jogou a carta");
-    socket.emit('mandarMonte')
     socket.emit('jogar', { userName, sala: salaAtual });
+    socket.emit('atualizarMonte', {sala : salaAtual});
 }
 // Listener para a resposta do servidor sobre quem bateu
 socket.on('bateu', (data) => {
@@ -84,5 +84,14 @@ socket.on('jogar', (data) => {
     }
 });
 
+socket.on('monteAtualizado', (data) =>{
+    const div = document.getElementById("numeroMonte")
+    const divImagem= document.getElementById("lastCardDeck")
+    div.textContent = "Monte: " + data.tamanhoMonte;
+    divImagem.src = "ImagensPegaMonte/"+data.monteCarta.imagemCarta;
+
+})
+socket.on('baralho', (data) =>{
+})
 //atualiza o monte
 
