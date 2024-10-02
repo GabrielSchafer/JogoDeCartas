@@ -147,12 +147,16 @@ io.on('connection', (socket) => {
         monteCartas.push(usuario.baralhoUsuario.pop())
         socket.emit('jogar', { jogador: 'Você' });
 
-        socket.to(data.sala).emit('jogar', { jogador: usuario.name });
+        const numeroCartas = usuario.baralhoUsuario.length
+
+        io.emit('cartasUser',{ numeroCartas: numeroCartas });
+
+        socket.to(data.sala).emit('jogar', { jogador: usuario.name});
 
     });
     socket.on(`atualizarMonte`, (data) => {
         //enviando a mensagem de volta para o servidor
-        socket.to(data.sala).emit(`monteAtualizado`,{ monteCarta: retornaUltimaCartaMonte(monteCartas), tamanhoMonte: monteCartas.length} )
+        io.to(data.sala).emit(`monteAtualizado`,{ monteCarta: retornaUltimaCartaMonte(monteCartas), tamanhoMonte: monteCartas.length} )
         console.log(retornaUltimaCartaMonte(monteCartas))
     } )
 

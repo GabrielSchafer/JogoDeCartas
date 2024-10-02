@@ -84,6 +84,11 @@ socket.on('jogar', (data) => {
     }
 });
 
+socket.on('cartasUser', (data) => {
+    const divBaralho = document.getElementById("numeroBaralho");
+    divBaralho.textContent = `${data.numeroCartas}`;
+})
+
 socket.on('monteAtualizado', (data) =>{
     const div = document.getElementById("numeroMonte")
     const divImagem= document.getElementById("lastCardDeck")
