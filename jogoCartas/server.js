@@ -93,7 +93,7 @@ app.use(express.static('public'));
 //criando o baralho
 criaBaralho(baralho);
 console.log(baralho.length)
-
+let rodadas = 0;
 const monteCartas= [];
 io.on('connection', (socket) => {
     console.log('Usuário conectado:', socket.id);
@@ -112,10 +112,6 @@ io.on('connection', (socket) => {
             }
         }*/
 
-        if (salas[sala].length == 4) {
-            io.emit('iniciarJogo');
-            console.log('O jogo pode começar!');
-        }
 
         // Notifica os outros usuários na sala
         socket.to(sala).emit('mensagem', `${userName} entrou na sala!`);
@@ -165,10 +161,10 @@ io.on('connection', (socket) => {
         if (usuario) {
             const { nome, sala } = usuario; // Desestrutura o nome e a sala
             salas[sala].numero -= 1; // Reduz o número de jogadores na sala
-            console.log(`Usuário desconectado: ${nome}`);
+            console.log(`Usuário desconectado:` + usuario.name);
             
             // Notifica os outros usuários que um usuário saiu
-            socket.to(sala).emit('mensagem', `${nome} saiu da sala.`);
+            io.to(sala).emit('mensagem', usuario.name + ` saiu da sala.`);
             
             // Atualiza todos os usuários sobre o número de jogadores
             io.to(sala).emit('atualizaJogadores', { sala, numeroJogadores: salas[sala].numero, maxJogadores: salas[sala].max });
@@ -181,6 +177,21 @@ io.on('connection', (socket) => {
 
     socket.on('baralho', (data) =>{
         const user = usuario[socket.id]
+    })
+
+    socket.on('liberaJogo', ({sala}) =>{
+        let libera;
+        console.log(sala);
+        console.log(salas[sala].numero);
+        if(salas[sala].numero == salas[sala].max){
+            libera = true
+        }else if(salas[sala].numero < salas[sala].max){
+            libera = false;
+        }
+        io.to(sala).emit('liberaJogo', { libera : libera} )
+        if(libera){
+            io.to(sala).emit('mudarTelaJogo')
+        }
     })
 
 });

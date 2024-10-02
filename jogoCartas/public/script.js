@@ -1,8 +1,9 @@
 const socket = io(); // Conecta ao servidor
 
 let salaAtual;
-let numeroCartaMonte = 0;
 let userName;
+var liberaSala;
+
 
 function verificaRodada(){
     //se for a sua vez de jogar habilita o botão
@@ -24,7 +25,9 @@ function habilitaJogarCarta(){
 // Oatualiza o número de jogadores
 socket.on('atualizaJogadores', (data) => {
     const salaDiv = document.getElementById("numeroJogadores"); //
+    const salaEspera = document.getElementById("filaId"); //
     salaDiv.textContent = "Número de jogadores: " +`${data.numeroJogadores}/${data.maxJogadores}`;
+    salaEspera.textContent = "ESPERANDO TODOS OS JOGADORES: " +`${data.numeroJogadores}/${data.maxJogadores}`;
 });
 
 //  mensagem de entrada e saída
@@ -33,28 +36,45 @@ socket.on('mensagem', (msg) => {
     alert(msg); 
 });
 
+//SOCKET.ON PARA RECEBER A VOLTA DO SERVIDOR
+
 // Função para entrar em uma sala
-function entrarSala(sala) {
+async function entrarSala(sala) {
 
     userName = prompt("Por favor, insira seu nome:");
-    
+
     if (!userName) {
         alert("Você precisa inserir um nome para entrar na sala.");
         return; // Se o nome não for fornecido, sai da função
     }
 
-        salaAtual = sala; // Salva a sala atual
-        socket.emit('entrarSala', {sala, userName}); // Envia o evento ao servidor
-        // Muda da tela inicial para a tela do jogo
-        document.getElementById("telaInicial").classList.add("hidden");
-        //document.getElementById("fila").classList.remove("hidden");
-        document.getElementById("telaJogo").classList.remove("hidden");
+    salaAtual = sala; // Salva a sala atual
+    socket.emit('entrarSala', {sala, userName}); // Envia o evento ao servidor
+    // Muda da tela inicial para a tela do jogo
 
-        // Atualiza a tela com o nome do usuário e sala
-        document.getElementById("nomeUsuario").innerText = `Usuário: ${userName}`;
-        document.getElementById("salaAtual").innerText = `Sala: ${sala}`;
+    document.getElementById("telaInicial").classList.add("hidden");
+    //document.getElementById("fila").classList.remove("hidden");
+    socket.emit('liberaJogo', {sala});
+    const resposta = await new Promise(resolve => {
+        socket.on('liberaJogo', (data) => {
+            liberaSala = data.libera;
+            if (liberaSala == true) {
+                document.getElementById("fila").classList.add("hidden");
+                document.getElementById("telaJogo").classList.remove("hidden");
 
-        console.log(`Entrou na ${sala} como ${userName}`);
+                // Atualiza a tela com o nome do usuário e sala
+                document.getElementById("nomeUsuario").innerText = `Usuário: ${userName}`;
+                document.getElementById("salaAtual").innerText = `Sala: ${sala}`;
+
+                console.log(`Entrou na ${sala} como ${userName}`);
+            } else {
+                document.getElementById("fila").classList.remove("hidden");
+                alert(liberaSala)
+            }
+            resolve();
+        });
+    })
+
 }
 
 // Função ao clicar no botão "Bater"
