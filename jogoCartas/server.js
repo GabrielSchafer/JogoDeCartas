@@ -11,7 +11,7 @@ const salas = {
 
 };
 
-let monteCartas = {};
+let monteCartas= 0;
 
 function Carta(numeroCarta, imagemCarta){
     this.numeroCarta = numeroCarta;
@@ -35,14 +35,19 @@ function criaBaralho(baralho){
 
 }
 
-function distribuirCarta(i){
+function distribuirCartas(cartas,usuarios) {
 
+    for (let i = 0; i < 1; i++) {
+       for (let j = 0; j < 26;j++){
+           usuarios[i].baralhoUsuario.push(cartas.pop())
+       }
+    }
 }
 
-function User(userName, id, baralho){
+function User(userName, id, baralhoUsuario){
     this.id = id;
     this.name = userName;
-    this.baralho = baralho;
+    this.baralhoUsuario = baralhoUsuario;
 }
 
 let salaCheia;
@@ -86,6 +91,9 @@ io.on('connection', (socket) => {
         socket.emit('jogar', { jogador: 'Você' });
 
         socket.to(data.sala).emit('jogar', { jogador: data.usuarioNome });
+
+        socket.emit('mandarMonte', {monteCartas})
+        monteCartas++;
     });
 
     socket.on('disconnect', () => {

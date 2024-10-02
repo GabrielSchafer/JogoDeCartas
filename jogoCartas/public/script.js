@@ -61,15 +61,13 @@ function entrarSala(sala) {
 // Função ao clicar no botão "Bater"
 function bater() {
     console.log("Bateu na mesa!");
-    socket.emit('bater', { usuarioNome, sala: salaAtual }); 
+    socket.emit('bater', { userName, sala: salaAtual });
 }
 
 function escolherCarta(){
     console.log("Jogou a carta");
-    const elementoMonte = document.getElementById("numeroMonte")
-    numeroCartaMonte++;
-    elementoMonte.textContent= "Monte: " + numeroCartaMonte;
-    socket.emit('jogar', { usuarioNome, sala: salaAtual });
+    socket.emit('mandarMonte')
+    socket.emit('jogar', { userName, sala: salaAtual });
 }
 // Listener para a resposta do servidor sobre quem bateu
 socket.on('bateu', (data) => {
@@ -86,3 +84,9 @@ socket.on('jogar', (data) => {
         alert(`${data.jogador} jogou a carta!`);
     }
 });
+
+//atualiza o monte
+socket.on('mandaMonte', (data) => {
+    let element = document.getElementById("numeroMonte");
+    element.textContent = 'Monte: ' + data.monteCartas;
+})
