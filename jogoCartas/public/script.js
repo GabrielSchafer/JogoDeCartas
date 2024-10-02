@@ -117,8 +117,7 @@ socket.on('monteAtualizado', (data) =>{
     divImagem.src = "ImagensPegaMonte/"+data.monteCarta.imagemCarta;
 
 })
-socket.on('baralho', (data) =>{
-})
+
 
 socket.on('finalizarJogo', (data)=>{
     alert(data.mensagemFinal)
